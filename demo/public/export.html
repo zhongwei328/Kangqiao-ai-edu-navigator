@@ -222,6 +222,10 @@ function buildReportHTML(isParent) {
       '<!--BODY_START-->' + savedReport.replace(/ class="ed"/g, '').replace(/contenteditable="true"/g, '') + '<!--BODY_END-->');
   }
   finalHtml = finalHtml.replace(/<!--BODY_START-->|<!--BODY_END-->/g, '');
+  if (isParent) {
+    // 家长版：剔除老师内部审批意见（校长意见已在上方 isParent 分支排除），仅保留诊断与行动建议
+    finalHtml = finalHtml.replace(/<section class="sec teacher-note-sec">[\s\S]*?<\/section>/g, '');
+  }
   return finalHtml;
 }
 

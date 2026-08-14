@@ -309,8 +309,7 @@
     $('#report').style.display = 'block';
     $('#cards').style.display = 'none';
     $('#approveBar').style.display = 'none';
-    $('#teacherNoteDisplay').style.display = 'none';
-    $('#teacherNoteDisplay').innerHTML = '';
+    const _tnd = $('#teacherNoteDisplay'); if (_tnd) { _tnd.style.display = 'none'; _tnd.innerHTML = ''; }
   };
   $('#aiClose').onclick = () => $('#aiModal').classList.remove('show');
   $('#aiModal').onclick = e => { if (e.target.id === 'aiModal') $('#aiModal').classList.remove('show'); };
@@ -462,7 +461,7 @@
       // 进入编辑模式：显示卡片，隐藏只读报告，显示审批栏
       btn.textContent = '👁 退出编辑模式';
       report.style.display = 'none';
-      $('#teacherNoteDisplay').style.display = 'none';
+      const _tnd2 = $('#teacherNoteDisplay'); if (_tnd2) _tnd2.style.display = 'none';
       cards.style.display = 'block';
       bar.style.display = 'block';
       // 预填已保存的老师审批意见
@@ -506,11 +505,7 @@
       report.style.display = 'block';
       cards.style.display = 'none';
       bar.style.display = 'none';
-      // 显示老师审批意见（如果有）
-      const noteDisplay = $('#teacherNoteDisplay');
-      if (noteDisplay && noteDisplay.innerHTML) {
-        noteDisplay.style.display = 'block';
-      }
+      // 老师审批意见已并入报告正文，无需在独立 div 重复展示
     }
   };
   } // 结束 init 函数

@@ -91,7 +91,7 @@ Kangqiao Demo 202608/
 │       ├── principal.html     # Step4 校长审批
 │       ├── export.html        # Step5 导出 PDF
 │       ├── css/               # kangqiao.css / teacher.css
-│       └── js/                # henry-data.js / report3.js / teacher.js / interview.js / ...
+│       └── js/                # henry-data.js / report3.js / teacher.js（interview.html 为内联脚本）
 ├── AI升学诊断Demo设计方案.md    # 完整文字方案
 ├── AI升学诊断Demo_架构图.html   # 架构图（SVG 源文件）
 ├── architecture.png             # 架构图（GitHub README 预览用）
