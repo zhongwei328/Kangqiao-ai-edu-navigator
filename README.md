@@ -41,6 +41,16 @@ node server.js          # 零依赖 Node 静态服务，默认端口 8080
 
 ---
 
+## 在线演示（CloudStudio 公网托管）
+
+无需本地环境，直接浏览器打开即可体验完整五步流程：
+
+🔗 **https://ff3c77577dcd499281e64d696c790e6e.app.workbuddy.link**
+
+> 该链接由 CloudStudio 沙箱静态托管，内容与 `demo/public/` 一致；每页右下角「🔄 重置演示」可清空本地数据。链接长期有效，部署由 WorkBuddy 桌面端「设置 - 数据管理 - 我发布的应用」管理。
+
+---
+
 ## 技术栈
 
 - **后端**：Node.js 原生 `http` 模块，零依赖静态文件服务（`demo/server.js`）
