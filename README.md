@@ -14,6 +14,14 @@
 
 ---
 
+## 系统架构
+
+![系统架构图](architecture.png)
+
+> 矢量源文件：`AI升学诊断Demo_架构图.html`（下载后用浏览器打开可查看/缩放）
+
+---
+
 ## 五步流程（封面 + 5 步）
 
 | 步骤 | 页面 | 说明 |
@@ -85,7 +93,8 @@ Kangqiao Demo 202608/
 │       ├── css/               # kangqiao.css / teacher.css
 │       └── js/                # henry-data.js / report3.js / teacher.js / interview.js / ...
 ├── AI升学诊断Demo设计方案.md    # 完整文字方案
-├── AI升学诊断Demo_架构图.html   # 架构图（SVG）
+├── AI升学诊断Demo_架构图.html   # 架构图（SVG 源文件）
+├── architecture.png             # 架构图（GitHub README 预览用）
 ├── 0.1 Requirements/         # 需求来源材料
 ├── 0.2 Inputs/               # 输入材料（D1–D5 报告、竞品、财务模型等）
 ├── 00 Idea/                  # 立项素材（团队 deck、提案书等）
