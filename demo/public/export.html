@@ -266,19 +266,19 @@ async function generatePDF(type) {
     // 等待字体与布局稳定
     await new Promise(r => setTimeout(r, 300));
     const canvas = await html2canvas(src, { scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false });
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+    const pdf = new jsPDF('p', 'mm', 'a4', { compression: 'DEFLATE' });
     const pageW = 210, pageH = 297;
     const imgW = pageW;
     const imgH = canvas.height * imgW / canvas.width;
     let heightLeft = imgH;
     let position = 0;
-    pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+    pdf.addImage(imgData, 'JPEG', 0, position, imgW, imgH);
     heightLeft -= pageH;
     while (heightLeft > 0) {
       position = heightLeft - imgH; // 负偏移，逐页上移
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+      pdf.addImage(imgData, 'JPEG', 0, position, imgW, imgH);
       heightLeft -= pageH;
     }
     const fname = (isParent ? '康桥AI升学诊断报告_家长版' : '康桥AI升学诊断报告_内部版') + '.pdf';
