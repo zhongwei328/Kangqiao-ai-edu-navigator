@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Education Navigator · 康桥 AI 升学诊断 Demo</title>
+<link rel="stylesheet" href="css/kangqiao.css">
+<style>
+.cover-wrap{max-width:1040px;margin:0 auto;padding:40px 22px 50px;}
+.cover-hero{text-align:center;padding:24px 16px 8px;}
+.brand{font-size:40px;font-weight:800;color:var(--kq-d);letter-spacing:.5px;margin:0;}
+.brand-cn{font-size:16px;color:var(--kq);margin-top:8px;font-weight:600;}
+.tagline{font-size:15px;color:var(--text-l);margin-top:16px;line-height:1.7;}
+.source{display:inline-block;margin-top:20px;font-size:12.5px;color:var(--text-l);background:var(--soft);border:1px solid var(--soft-b);padding:8px 18px;border-radius:20px;}
+.hl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:34px 0 8px;}
+.hl-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 18px;transition:.15s;}
+.hl-card:hover{border-color:var(--kq);box-shadow:0 6px 18px rgba(146,7,131,.10);}
+.hl-emoji{font-size:30px;}
+.hl-title{font-weight:700;color:var(--kq-d);margin:12px 0 8px;font-size:15px;}
+.hl-desc{font-size:12.5px;color:var(--text-l);line-height:1.6;}
+.cta-wrap{text-align:center;margin:30px 0 8px;}
+.btn-lg{padding:15px 44px;font-size:17px;display:inline-block;background:var(--kq);color:#fff;border:none;border-radius:10px;cursor:pointer;text-decoration:none;font-weight:700;box-shadow:0 4px 14px rgba(146,7,131,.25);}
+.btn-lg:hover{background:var(--kq-d);}
+.flow-hint{text-align:center;font-size:13px;color:var(--text-l);margin:22px 0 6px;}
+.case{text-align:center;font-size:13px;color:var(--kq-d);font-weight:600;margin-top:4px;}
+footer{margin-top:36px;font-size:11px;color:#999;text-align:center;}
+@media(max-width:820px){.hl-grid{grid-template-columns:repeat(2,1fr);}.brand{font-size:32px;}}
+@media(max-width:480px){.hl-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap cover-wrap">
+  <div class="cover-hero">
+    <h1 class="brand">AI Education Navigator</h1>
+    <div class="brand-cn">康桥 AI 升学竞争力诊断与培养规划</div>
+    <p class="tagline">用一次对话，挖出孩子看不见的升学「战略期权」<br>让学校的升学指导，从经验判断走向数据驱动</p>
+    <div class="source">来源于：华盛顿大学圣路易斯分校 EMBA · AI Practicum 项目　×　康桥国际学校　联合 Demo</div>
+  </div>
+
+  <div class="hl-grid">
+    <div class="hl-card">
+      <div class="hl-emoji">🔍</div>
+      <div class="hl-title">特殊信息挖掘</div>
+      <div class="hl-desc">自动识别国籍 / 家庭 / 经历中的异常点，生成「战略期权」——如德国籍 → 欧盟低免学费保底 + 赴美签证豁免。</div>
+    </div>
+    <div class="hl-card">
+      <div class="hl-emoji">🔄</div>
+      <div class="hl-title">五步闭环</div>
+      <div class="hl-desc">录入 → AI 访谈 → 生成报告 & 老师审批 → 校长审批 → 导出，全流程校内即可落地。</div>
+    </div>
+    <div class="hl-card">
+      <div class="hl-emoji">✍️</div>
+      <div class="hl-title">老师现场改</div>
+      <div class="hl-desc">卡片化就地编辑、AI 建议、修订留痕；一份报告一键导出 PDF（内部版 / 家长版）。</div>
+    </div>
+    <div class="hl-card">
+      <div class="hl-emoji">📊</div>
+      <div class="hl-title">可视化诊断</div>
+      <div class="hl-desc">学业竞争力条形图、三校匹配 / 推荐星级、学费对比，结论一目了然。</div>
+    </div>
+  </div>
+
+  <div class="cta-wrap">
+    <a class="btn-lg" href="input.html">▶ 开始演示（约 5 分钟）</a>
+  </div>
+
+  <div class="flow-hint">演示流程：① 信息录入　② AI 诊断访谈　③ 生成报告 & 老师审批　④ 校长审批　⑤ 导出 PDF</div>
+  <div class="case">演示案例：Henry（牟海天）· 昆山康桥 G7 · 目标港三全奖（港大 / 港科大 / 港中文）</div>
+
+  <footer>本 Demo 为教学演示用途，所有数据均为预置示例。</footer>
+</div>
+<button class="reset-fab" title="清空所有录入/审批数据并回到首页" onclick="if(confirm('确定重置演示数据？\n将清空录入、AI访谈、老师/校长审批等所有记录，并回到首页。')){['studentInput','teacherReportHTML','teacherNote','principalNote','principalSign','interviewResult','principalStatus','trails'].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});location.href='index.html';}">🔄 重置演示</button>
+</body>
+</html>

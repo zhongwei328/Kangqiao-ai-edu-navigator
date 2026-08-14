@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI 升学竞争力诊断与培养规划 · 架构图</title>
+<style>
+  :root{
+    --green:#920783; --green-light:#F3E7F0; --green-mid:#6c0561;
+    --amber:#E8A33D; --amber-light:#FDF3E3;
+    --ink:#1F2937; --muted:#6B7280; --line:#E8D4E2;
+    --bg:#FBF7FA;
+  }
+  *{box-sizing:border-box;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;}
+  body{margin:0;background:var(--bg);color:var(--ink);padding:32px;}
+  h1{color:var(--green);font-size:24px;margin:0 0 4px;}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:24px;}
+  .diagram{background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px;box-shadow:0 2px 10px rgba(15,110,86,.06);}
+  svg{width:100%;height:auto;display:block;}
+  .layer-title{font-size:13px;font-weight:700;fill:var(--green);}
+  .box-title{font-size:13px;font-weight:700;fill:#fff;}
+  .box-sub{font-size:10.5px;fill:#EAF4F0;}
+  .box-title-d{font-size:13px;font-weight:700;fill:var(--ink);}
+  .box-sub-d{font-size:10.5px;fill:var(--muted);}
+  .step-num{font-size:11px;font-weight:700;fill:#fff;}
+  .step-title{font-size:12px;font-weight:700;fill:#fff;}
+  .step-sub{font-size:9.5px;fill:#FDE9CF;}
+  table{width:100%;border-collapse:collapse;margin-top:28px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(15,110,86,.06);}
+  th,td{border:1px solid var(--line);padding:10px 12px;font-size:12.5px;text-align:left;vertical-align:top;}
+  th{background:var(--green);color:#fff;font-weight:600;}
+  tr:nth-child(even){background:var(--green-light);}
+  .tag{display:inline-block;background:var(--green-light);color:var(--green);border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:11px;margin:2px 3px 0 0;}
+  .tag.amber{background:var(--amber-light);color:#9A6212;border-color:#F0D8A8;}
+  h2{color:var(--green);font-size:18px;margin:34px 0 10px;}
+  .legend{font-size:11px;color:var(--muted);margin-top:10px;}
+  .legend span{margin-right:18px;}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px;}
+</style>
+</head>
+<body>
+
+<h1>AI 升学竞争力诊断与培养规划 · 架构图</h1>
+<div class="sub">昆山康桥国际学校 · 升学指导老师 / 校长内部 Demo · 案例：Henry（牟海天，G7，港三全奖目标）</div>
+
+<div class="diagram">
+<svg viewBox="0 0 920 1180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#920783"/>
+    </marker>
+    <marker id="arrowA" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#E8A33D"/>
+    </marker>
+  </defs>
+
+  <!-- ============ LAYER 0: 参考输入 ============ -->
+  <text x="40" y="38" class="layer-title">① 参考输入 / Reference Inputs</text>
+  <!-- card 1 -->
+  <rect x="40" y="52" width="200" height="96" rx="10" fill="#920783"/>
+  <text x="52" y="78" class="box-title">Henry 原始档案</text>
+  <text x="52" y="98" class="box-sub">Obsidian/EMBA/Henry/*</text>
+  <text x="52" y="114" class="box-sub">成绩 / 评语 / 性格 / 竞赛</text>
+  <text x="52" y="130" class="box-sub">AMC10 / NHSDLC / 港三调研</text>
+  <!-- card 2 -->
+  <rect x="270" y="52" width="200" height="96" rx="10" fill="#a83b94"/>
+  <text x="282" y="78" class="box-title">Demo1 通用版</text>
+  <text x="282" y="98" class="box-sub">study-abroad-portal</text>
+  <text x="282" y="114" class="box-sub">-ai-cy</text>
+  <text x="282" y="130" class="box-sub">英/美体系 · 基础架构</text>
+  <!-- card 3 -->
+  <rect x="500" y="52" width="200" height="96" rx="10" fill="#920783"/>
+  <text x="512" y="78" class="box-title">Demo2 IB/康桥版 ★</text>
+  <text x="512" y="98" class="box-sub">study-abroad-portal</text>
+  <text x="512" y="114" class="box-sub">-ai-cy-2</text>
+  <text x="512" y="130" class="box-sub">IB MYP · timeline.json</text>
+  <!-- card 4 -->
+  <rect x="730" y="52" width="150" height="96" rx="10" fill="#a83b94"/>
+  <text x="742" y="78" class="box-title">RAG 知识库</text>
+  <text x="742" y="98" class="box-sub">cy-2: 5 份 .md</text>
+  <text x="742" y="114" class="box-sub">港本/竞赛/标化</text>
+  <text x="742" y="130" class="box-sub">MYP/英美申请</text>
+
+  <!-- arrow L0 -> L1 -->
+  <line x1="460" y1="152" x2="460" y2="196" stroke="#920783" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============ LAYER 1: 数据层 ============ -->
+  <text x="40" y="222" class="layer-title">② 数据层 / Data Layer</text>
+  <rect x="40" y="236" width="260" height="92" rx="10" fill="#fff" stroke="#920783" stroke-width="1.5"/>
+  <text x="54" y="262" class="box-title-d">Henry 案例数据 (JSON)</text>
+  <text x="54" y="282" class="box-sub-d">画像 / 5科成绩 / 性格 / 目标校</text>
+  <text x="54" y="300" class="box-sub-d">诊断依据(老师评语) / 预警</text>
+  <text x="54" y="318" class="box-sub-d">复用 cy-2: academic/schools/holland/mbti</text>
+
+  <rect x="330" y="236" width="250" height="92" rx="10" fill="#fff" stroke="#920783" stroke-width="1.5"/>
+  <text x="344" y="262" class="box-title-d">康桥课程资源库</text>
+  <text x="344" y="282" class="box-sub-d">校内: 状元养成/语言中心/社团</text>
+  <text x="344" y="300" class="box-sub-d">校外: 学而思/英锐/唯寻 等</text>
+  <text x="344" y="318" class="box-sub-d">优先校内，校外为干预</text>
+
+  <rect x="610" y="236" width="270" height="92" rx="10" fill="#fff" stroke="#920783" stroke-width="1.5"/>
+  <text x="624" y="262" class="box-title-d">港三申请要求 & 时间轴</text>
+  <text x="624" y="282" class="box-sub-d">IB 40-42+ / 雅思6.5 / 面试</text>
+  <text x="624" y="300" class="box-sub-d">G7-G12 升学路线(cy-2 timeline)</text>
+  <text x="624" y="318" class="box-sub-d">RAG: 奖学金为探索方向</text>
+
+  <!-- arrow L1 -> L2 -->
+  <line x1="460" y1="332" x2="460" y2="376" stroke="#920783" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============ LAYER 2: 应用层 6-Step ============ -->
+  <text x="40" y="402" class="layer-title">③ 应用层 / 6 步工作流（封面 + 5-Step，可交互原型）</text>
+
+  <!-- Step1 -->
+  <rect x="40" y="416" width="135" height="150" rx="10" fill="#920783"/>
+  <text x="107" y="440" text-anchor="middle" class="step-num">STEP 1 ✔</text>
+  <text x="107" y="462" text-anchor="middle" class="step-title">信息录入</text>
+  <text x="107" y="486" text-anchor="middle" class="step-sub">表单 +</text>
+  <text x="107" y="502" text-anchor="middle" class="step-sub">「导入Henry」按钮</text>
+  <text x="107" y="524" text-anchor="middle" class="step-sub">目标可填</text>
+  <text x="107" y="540" text-anchor="middle" class="step-sub">"暂不确定"</text>
+
+  <!-- Step2 -->
+  <rect x="189" y="416" width="135" height="150" rx="10" fill="#920783"/>
+  <text x="256" y="440" text-anchor="middle" class="step-num">STEP 2 ✔</text>
+  <text x="256" y="462" text-anchor="middle" class="step-title">AI 诊断访谈</text>
+  <text x="256" y="486" text-anchor="middle" class="step-sub">3 轮对话</text>
+  <text x="256" y="502" text-anchor="middle" class="step-sub">选项+输入</text>
+  <text x="256" y="524" text-anchor="middle" class="step-sub"> Henry 可</text>
+  <text x="256" y="540" text-anchor="middle" class="step-sub">「跳过」</text>
+
+  <!-- Step3 (合并生成报告+老师审批) ✔ 已构建 -->
+  <rect x="338" y="408" width="135" height="166" rx="10" fill="#E8A33D"/>
+  <text x="405" y="432" text-anchor="middle" class="step-num" fill="#7A4E00">STEP 3 ★</text>
+  <text x="405" y="456" text-anchor="middle" class="step-title" fill="#7A4E00">生成报告和</text>
+  <text x="405" y="476" text-anchor="middle" class="step-title" fill="#7A4E00">老师审批</text>
+  <text x="405" y="502" text-anchor="middle" class="step-sub" fill="#7A4E00">只读+编辑模式</text>
+  <text x="405" y="522" text-anchor="middle" class="step-sub" fill="#7A4E00">卡片化就地改</text>
+  <text x="405" y="542" text-anchor="middle" class="step-sub" fill="#7A4E00">AI建议·审批</text>
+  <text x="405" y="562" text-anchor="middle" class="step-sub" fill="#7A4E00">意见存盘 ✔</text>
+
+  <!-- Step4 -->
+  <rect x="487" y="416" width="135" height="150" rx="10" fill="#920783"/>
+  <text x="554" y="440" text-anchor="middle" class="step-num">STEP 4 ✔</text>
+  <text x="554" y="462" text-anchor="middle" class="step-title">校长审批</text>
+  <text x="554" y="486" text-anchor="middle" class="step-sub">展示修改后报告</text>
+  <text x="554" y="502" text-anchor="middle" class="step-sub">同意/退回</text>
+  <text x="554" y="524" text-anchor="middle" class="step-sub">签名</text>
+
+  <!-- Step5 -->
+  <rect x="636" y="416" width="135" height="150" rx="10" fill="#920783"/>
+  <text x="703" y="440" text-anchor="middle" class="step-num">STEP 5 ✔</text>
+  <text x="703" y="462" text-anchor="middle" class="step-title">导出</text>
+  <text x="703" y="486" text-anchor="middle" class="step-sub">PDF 直接生成</text>
+  <text x="703" y="502" text-anchor="middle" class="step-sub">(含审批意见)</text>
+  <text x="703" y="524" text-anchor="middle" class="step-sub">家长版</text>
+  <text x="703" y="540" text-anchor="middle" class="step-sub">(过滤内部)</text>
+
+  <!-- flow arrows between steps -->
+  <line x1="175" y1="491" x2="186" y2="491" stroke="#920783" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="324" y1="491" x2="335" y2="491" stroke="#920783" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="473" y1="491" x2="484" y2="491" stroke="#920783" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="622" y1="491" x2="633" y2="491" stroke="#920783" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="771" y1="491" x2="782" y2="491" stroke="#920783" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- feedback loop Step4 -> Step3 -->
+  <path d="M487,470 C420,440 405,440 405,438" fill="none" stroke="#E8A33D" stroke-width="2" marker-end="url(#arrowA)"/>
+  <text x="446" y="430" text-anchor="middle" font-size="9.5" fill="#9A6212">修改反馈</text>
+
+  <!-- arrow L2 -> L3 -->
+  <line x1="460" y1="582" x2="460" y2="626" stroke="#920783" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============ LAYER 3: 技术栈 ============ -->
+  <text x="40" y="652" class="layer-title">④ 技术栈 / Tech Stack</text>
+  <rect x="40" y="666" width="200" height="86" rx="10" fill="#fff" stroke="#a83b94" stroke-width="1.5"/>
+  <text x="54" y="692" class="box-title-d">前端</text>
+  <text x="54" y="712" class="box-sub-d">HTML / CSS / JS</text>
+  <text x="54" y="730" class="box-sub-d">可交互原型</text>
+  <text x="54" y="748" class="box-sub-d">卡片式 + 雷达图</text>
+
+  <rect x="270" y="666" width="200" height="86" rx="10" fill="#fff" stroke="#a83b94" stroke-width="1.5"/>
+  <text x="284" y="692" class="box-title-d">后端</text>
+  <text x="284" y="712" class="box-sub-d">Node.js</text>
+  <text x="284" y="730" class="box-sub-d">静态服务 / API</text>
+  <text x="284" y="748" class="box-sub-d">参考 cy-2 结构</text>
+
+  <rect x="500" y="666" width="200" height="86" rx="10" fill="#fff" stroke="#a83b94" stroke-width="1.5"/>
+  <text x="514" y="692" class="box-title-d">AI 引擎（可选）</text>
+  <text x="514" y="712" class="box-sub-d">MiniMax API</text>
+  <text x="514" y="730" class="box-sub-d">报告生成 / 访谈</text>
+  <text x="514" y="748" class="box-sub-d">RAG 检索增强</text>
+
+  <rect x="730" y="666" width="150" height="86" rx="10" fill="#fff" stroke="#a83b94" stroke-width="1.5"/>
+  <text x="744" y="692" class="box-title-d">导出</text>
+  <text x="744" y="712" class="box-sub-d">jsPDF + html2canvas</text>
+  <text x="744" y="730" class="box-sub-d">内部版 / 家长版</text>
+  <text x="744" y="748" class="box-sub-d">过滤开关</text>
+
+  <!-- footer note -->
+  <rect x="40" y="780" width="840" height="64" rx="10" fill="#F3E7F0" stroke="#E8D4E2"/>
+  <text x="56" y="806" font-size="12" font-weight="700" fill="#920783">关键设计决策</text>
+  <text x="56" y="826" font-size="11" fill="#1F2937">• 演示重点 = Step3 生成报告和老师审批（只读+编辑模式切换）　• 行动清单优先校内资源　• 德国籍战略期权为差异化亮点</text>
+  <text x="56" y="842" font-size="11" fill="#1F2937">• Service 0/7 为紧急预警（IB 毕业硬性要求）　• 复用 cy-2 的 IB 版数据与时间轴</text>
+
+  <text x="40" y="872" font-size="11" fill="#6B7280">图例：</text>
+  <text x="96" y="872" font-size="11" fill="#6B7280"><tspan fill="#920783">■</tspan> 主流程/数据　<tspan fill="#E8A33D">■</tspan> 演示重点(生成报告+审批)　<tspan fill="#a83b94">■</tspan> 参考源</text>
+  <text x="40" y="894" font-size="11" fill="#6B7280">构建状态：<tspan fill="#16A34A">✔ 全部已构建</tspan> 封面首页 / Step1 信息录入 / Step2 AI诊断访谈 / Step3 生成报告+老师审批 / Step4 校长审批 / Step5 导出（点击直接生成 PDF，跳过打印对话框）</text>
+  <text x="40" y="916" font-size="11" fill="#6B7280">已增强：<tspan fill="#920783">最小数据贯通</tspan>（Step1 姓名/年级/学校/目标 → 报告头部画像，四入口一致）　·　<tspan fill="#920783">第四页「🗑 清理修订留痕」</tspan>　·　每页「🔄 重置演示」浮动按钮</text>
+</svg>
+</div>
+
+<div class="legend">
+  <span><span class="dot" style="background:#920783"></span>主流程 / 数据层</span>
+  <span><span class="dot" style="background:#E8A33D"></span>演示重点（生成报告+审批）</span>
+  <span><span class="dot" style="background:#a83b94"></span>参考源</span>
+</div>
+
+<h2>参考文件清单</h2>
+<table>
+  <tr><th style="width:22%">类别</th><th style="width:30%">文件 / 路径</th><th>用途</th></tr>
+  <tr>
+    <td><b>Henry 原始档案</b></td>
+    <td><code>Obsidian/EMBA/Henry/</code><br>升学规划档案.md · 课堂概览/课堂概览汇总.md · Academic Report/2026_Grade_7_2_Henry_中文版.md · AMC10/Henry_AMC10错题分类分析.md · 港三升学方案_调研2026.md</td>
+    <td>学生画像、5科成绩、老师评语、性格、竞赛、港三差距分析的数据源</td>
+  </tr>
+  <tr>
+    <td><b>Demo1 通用版</b></td>
+    <td><code>.../study-abroad-portal-ai-cy/</code><br>data/demo-knowledge/ (3份 .md) · public/ · README.md · design-qa.md</td>
+    <td>基础产品架构、RAG 知识库雏形、五步流程参考</td>
+  </tr>
+  <tr>
+    <td><b>Demo2 IB/康桥版 ★</b></td>
+    <td><code>.../study-abroad-portal-ai-cy-2/</code><br>data/timeline.json · schools.json · holland-majors.json · mbti-majors.json · academic.json · demo-knowledge/ (5份 .md)</td>
+    <td><span class="tag amber">主要复用</span> IB MYP 体系、G7-G12 升学时间轴、康桥定制 RAG</td>
+  </tr>
+  <tr>
+    <td><b>RAG 知识库（康桥专属）</b></td>
+    <td><code>Kangqiao Demo 202608/data/demo-knowledge/</code><br>
+      global-destinations.md（全目的地门槛/奖学金总纲）· kangqiao-admission-results.md（历年全目的地录取）· hk-admission-by-pool.md（港校身份分池）· europe-options.md（德国籍欧陆优势）· kangqiao-school-profile.md · ib-dp-course-map.md</td>
+    <td><span class="tag amber">已全覆盖</span> 所有主流留学目的地（美/英/加/澳/新/港/欧/日）的申请门槛、语言、全奖格局与康桥 IB 画像匹配度；RAG 不再以港三为中心</td>
+  </tr>
+  <tr>
+    <td><b>已保存方案文档</b></td>
+    <td><code>Kangqiao Demo 202608/AI升学诊断Demo设计方案.md</code></td>
+    <td>本架构图配套的文字版完整设计（五步流程 + Henry 数据 + 行动清单）</td>
+  </tr>
+</table>
+
+<h2>技术架构说明</h2>
+<table>
+  <tr><th style="width:22%">层</th><th style="width:26%">组件</th><th>说明</th></tr>
+  <tr><td>前端</td><td>HTML / CSS / JS 单页原型</td><td>卡片式布局，雷达图展示竞争力，Timeline 展示升学路线；Step4 内容可点击直接编辑</td></tr>
+  <tr><td>数据</td><td>Henry 案例 JSON + 康桥资源库 + 港三要求库</td><td>从 cy-2 的 academic/schools/holland/mbti/timeline JSON 复用并替换为 Henry 真实数据</td></tr>
+  <tr><td>AI（可选）</td><td>MiniMax API + RAG 检索</td><td>生成诊断结论、3 轮访谈提问；RAG 提供"资料关联"依据（最多 3 条来源）</td></tr>
+  <tr><td>后端</td><td>Node.js 静态服务 / 轻量 API</td><td>参考 cy / cy-2 的工程结构；本地运行供校内 Demo 演示</td></tr>
+  <tr><td>导出</td><td>jsPDF / 浏览器打印</td><td>内部版 PDF（含老师+校长审批意见）；家长版（过滤内部审批，仅结论+行动）</td></tr>
+</table>
+
+</body>
+</html>

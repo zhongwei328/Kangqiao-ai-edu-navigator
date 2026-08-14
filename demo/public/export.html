@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>康桥 AI 升学诊断 · 导出</title>
+<link rel="stylesheet" href="css/kangqiao.css">
+<style>
+.export-wrap{max-width:1040px;margin:0 auto;padding:28px 22px 60px;}
+.export-wrap > header.top{border-left:6px solid var(--kq);padding:6px 0 6px 16px;margin-bottom:8px;}
+.export-wrap > header.top h1{margin:0;font-size:22px;color:var(--kq-d);}
+.export-wrap > header.top p{margin:4px 0 0;color:var(--text-l);font-size:13px;}
+.nav-links{display:flex;justify-content:space-between;margin:16px 0;}
+.nav-links a{font-size:14px;color:var(--kq);text-decoration:none;font-weight:500;}
+.status-bar{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:12px;padding:16px 20px;margin:20px 0;}
+.status-bar h4{margin:0 0 8px;color:#166534;font-size:14px;}
+.status-bar p{margin:0;color:#15803d;font-size:13px;}
+.status-bar.warn{background:linear-gradient(135deg,#fef3c7,#fde68a);border-color:#f59e0b;}
+.status-bar.warn h4{color:#b45309;}
+.status-bar.warn p{color:#b45309;}
+.export-card{background:#fff;border:1px solid #e8e3ea;border-radius:14px;padding:24px;margin-bottom:20px;}
+.export-card h3{margin:0 0 16px;font-size:16px;color:var(--kq-d);}
+.export-options{display:flex;gap:20px;flex-wrap:wrap;}
+.export-option{flex:1;min-width:250px;background:#fafafa;border:1px solid #e8e3ea;border-radius:12px;padding:20px;text-align:center;}
+.export-option .icon{font-size:36px;margin-bottom:12px;}
+.export-option h4{margin:0 0 8px;font-size:15px;color:var(--text);}
+.export-option p{font-size:12px;color:var(--text-l);margin:0 0 16px;}
+.btn{padding:10px 24px;font-size:14px;display:inline-block;background:var(--kq);color:#fff;border:none;border-radius:8px;cursor:pointer;text-decoration:none;font-weight:600;}
+.btn:hover{background:var(--kq-d);}
+.btn.ghost{background:#fff;color:var(--kq);border:1px solid var(--kq);}
+.btn.ghost:hover{background:var(--soft);}
+.btn:disabled{opacity:.6;cursor:wait;}
+.approval-box{background:#f3e7f0;border-left:4px solid var(--kq);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;}
+.approval-box h4{margin:0 0 8px;color:var(--kq-d);font-size:13px;}
+.approval-box p{margin:4px 0;font-size:12px;line-height:1.6;white-space:pre-wrap;}
+/* 离屏 PDF 渲染容器：A4 宽 794px @96dpi */
+#pdfSource{position:fixed;left:-10000px;top:0;width:794px;background:#fff;padding:24px;box-sizing:border-box;}
+</style>
+</head>
+<body>
+<div class="wrap export-wrap">
+  <header class="top">
+    <h1>导出报告</h1>
+    <p>Step 5 / 5 · 选择导出格式（点击即直接生成 PDF 下载，无需打印对话框）</p>
+  </header>
+
+  <div class="nav-links">
+    <a href="principal.html" class="back">◀ 返回「校长审批」</a>
+    <span></span>
+  </div>
+
+  <div class="topnav" id="topnav"></div>
+
+  <div class="status-bar" id="statusBar">
+    <h4>✅ 审批完成</h4>
+    <p id="statusText">校长已批准报告</p>
+  </div>
+
+  <div class="export-card">
+    <h3>请选择导出格式</h3>
+    <div class="export-options">
+      <div class="export-option">
+        <div class="icon">📄</div>
+        <h4>PDF 内部版</h4>
+        <p>含老师 / 校长审批意见，供校内存档</p>
+        <button class="btn" id="btn-internal" onclick="generatePDF('internal')">⬇️ 生成 PDF 内部版</button>
+      </div>
+      <div class="export-option">
+        <div class="icon">👨‍👩‍👧</div>
+        <h4>家长版</h4>
+        <p>过滤内部审批意见，仅含结论与行动建议</p>
+        <button class="btn ghost" id="btn-parent" onclick="generatePDF('parent')">⬇️ 生成家长版 PDF</button>
+      </div>
+    </div>
+    <p style="margin-top:16px;font-size:12px;color:var(--text-l);">💡 首次生成需联网加载 PDF 引擎（jsPDF / html2canvas）；报告带彩色条形图与星级条，直接导出为图片版 PDF。</p>
+  </div>
+
+  <div class="export-card">
+    <h3>审批信息汇总</h3>
+    <div id="approvalInfo"></div>
+  </div>
+
+  <footer></footer>
+</div>
+
+<!-- 离屏渲染容器：生成 PDF 时临时填充报告 HTML -->
+<div id="pdfSource"></div>
+
+<script src="js/henry-data.js"></script>
+<script>
+const steps = ['录入', 'AI访谈', '生成报告和老师审批', '校长审批', '导出'];
+const active = 4;
+document.getElementById('topnav').innerHTML = steps.map((s, i) =>
+  `<span class="step ${i === active ? 'active' : ''}">${i + 1}. ${s}</span>`).join('');
+
+const principalStatus = localStorage.getItem('principalStatus');
+const principalNote = localStorage.getItem('principalNote');
+const principalSign = localStorage.getItem('principalSign');
+const teacherNote = localStorage.getItem('teacherNote');
+
+if (principalStatus === 'approved') {
+  document.getElementById('statusText').textContent = '校长已批准报告 ✓';
+} else if (principalStatus === 'rejected') {
+  document.getElementById('statusText').textContent = '报告已退回修改';
+  const sb = document.getElementById('statusBar');
+  sb.classList.add('warn');
+  sb.querySelector('h4').textContent = '⚠️ 已退回修改';
+} else {
+  document.getElementById('statusText').textContent = '尚未完成校长审批';
+}
+
+let infoHtml = '';
+if (teacherNote) infoHtml += `<div class="approval-box"><h4>📝 老师审批意见</h4><p>${teacherNote}</p></div>`;
+if (principalNote) infoHtml += `<div class="approval-box"><h4>📝 校长审批意见</h4><p>${principalNote}</p></div>`;
+if (principalSign) infoHtml += `<p style="font-size:12px;"><b>校长签名：</b>${principalSign}</p>`;
+if (!infoHtml) infoHtml = '<p style="color:var(--text-l);">暂无审批信息</p>';
+document.getElementById('approvalInfo').innerHTML = infoHtml;
+
+/* ============ 报告 HTML 构建（复用 print-report 逻辑） ============ */
+function buildReportHTML(isParent) {
+  const H = window.applyInputOverride(window.HENRY);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function starPct(stars) {
+    const full = (stars.match(/★/g) || []).length;
+    const half = (stars.match(/½/g) || []).length;
+    return Math.round(((full + half * 0.5) / 5) * 100);
+  }
+  function buildRoadmap(rm) {
+    const n = rm.stages.length;
+    const sx = i => 70 + 140 * i;
+    const goalX = sx(n - 1) + 130;
+    const W = goalX + 60, Hh = 210, y = 95;
+    let nodes = '';
+    rm.stages.forEach((st, i) => {
+      const x = sx(i);
+      const fill = st.current ? '#920783' : '#fff';
+      const txtColor = st.current ? '#fff' : '#6c0561';
+      nodes += `<circle cx="${x}" cy="${y}" r="28" fill="${fill}" stroke="#920783" stroke-width="3"/>`;
+      nodes += `<text x="${x}" y="99" fill="${txtColor}" font-size="13" font-weight="700" text-anchor="middle">${esc(st.label)}</text>`;
+      if (st.sub) nodes += `<text x="${x}" y="113" fill="${txtColor}" font-size="9" text-anchor="middle">${esc(st.sub)}</text>`;
+      nodes += `<text x="${x}" y="148" fill="#333" font-size="11" text-anchor="middle">${esc(st.desc)}</text>`;
+    });
+    const g = rm.goal;
+    nodes += `<circle cx="${goalX}" cy="${y}" r="36" fill="#55044c" stroke="#920783" stroke-width="3"/>`;
+    nodes += `<text x="${goalX}" y="90" fill="#fff" font-size="20" text-anchor="middle">${g.emoji}</text>`;
+    nodes += `<text x="${goalX}" y="108" fill="#fff" font-size="10" font-weight="700" text-anchor="middle">${esc(g.sub)}</text>`;
+    nodes += `<text x="${goalX}" y="158" fill="#6c0561" font-size="11" font-weight="700" text-anchor="middle">${esc(g.main)}</text>`;
+    nodes += `<text x="${goalX}" y="174" fill="#23ac38" font-size="10" font-weight="700" text-anchor="middle">${esc(g.note)}</text>`;
+    return `<svg class="roadmap" viewBox="0 0 ${W} ${Hh}" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="kqline" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#920783"/><stop offset="100%" stop-color="#55044c"/></linearGradient></defs>
+      <line x1="70" y1="${y}" x2="${goalX}" y2="${y}" stroke="url(#kqline)" stroke-width="4" stroke-dasharray="2 6" stroke-linecap="round"/>
+      ${nodes}
+    </svg>`;
+  }
+
+  const p = H.profile, s = H.summary, d = H.diagnosis, iv = H.intervention;
+  const savedReport = localStorage.getItem('teacherReportHTML');
+  let html = '';
+  html += `<header style="border-left:6px solid #920783;padding:6px 0 6px 16px;margin-bottom:20px;">`;
+  html += `<h1 style="margin:0;font-size:22px;color:#6c0561;">康桥 AI 升学诊断报告</h1>`;
+  const goalText = p.chips.find(c=>c.k==='目标')?.v || '港三全奖';
+  html += `<p style="margin:4px 0 0;color:#666;font-size:14px;">目标：${goalText}</p></header>`;
+  html += `<!--BODY_START-->`;
+  html += `<section class="sec"><h2>一、学生画像（所有信息）</h2>`;
+  html += `<div class="chips">${p.chips.map(c=>`<span class="chip"><b>${esc(c.k)}</b> ${esc(c.v)}</span>`).join('')}</div>`;
+  html += `<div class="chips" style="margin-top:14px;">${p.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div></section>`;
+  html += `<section class="sec"><h2>二、材料提取信息总结</h2>`;
+  html += `<div style="font-size:13px;color:#666;margin:10px 0 6px;">学业竞争力（MYP 1–7 量表）</div>`;
+  p.academics.forEach(a => {
+    html += `<div class="bar-row"><span class="lab">${esc(a.name)}</span><div class="bar-track"><div class="bar-fill ${a.low?'low':''}" style="width:${a.pct}%"></div></div><span class="bar-val">${a.score} / ${a.max}</span></div>`;
+  });
+  html += `<div class="tricards">`;
+  ['green','red','de'].forEach(k => {
+    const c = s.tri[k];
+    html += `<div class="tcard ${k==='green'?'g':k==='red'?'r':'d'}"><h3>${esc(c.title)}</h3><ul>${c.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`;
+  });
+  html += `</div>`;
+  html += `<div class="tq g"><h4>🟢 优点（引用老师评语）</h4><table>${s.strengths.map(r=>`<tr><td>${esc(r.dim)}</td><td>${esc(r.text)}</td></tr>`).join('')}</table></div>`;
+  html += `<div class="tq r"><h4>🔴 改进点（引用老师评语）</h4><table>${s.weaknesses.map(r=>`<tr><td>${esc(r.dim)}</td><td>${esc(r.text)}</td></tr>`).join('')}</table></div></section>`;
+  html += `<section class="sec"><h2>三、目标学校诊断</h2><p class="sub">三校星级对比 + 学费对比 ＋ 德国籍影响 ＋ 专业推荐 ＋ 奖学金可行性</p>`;
+  let sbHtml = '';
+  d.schools.forEach(sch => {
+    sbHtml += `<div class="row"><span class="name">${esc(sch.name)}</span><div class="grp"><div class="meter"><span class="mlab">匹配</span><div class="mtrack"><div class="mfill" style="width:${starPct(sch.match)}%"></div></div><span class="stars">${esc(sch.match)}</span></div><div class="meter"><span class="mlab">推荐</span><div class="mtrack"><div class="mfill" style="width:${starPct(sch.rec)}%"></div></div><span class="stars">${esc(sch.rec)}</span></div></div></div>`;
+  });
+  html += `<div class="sb">${sbHtml}</div>`;
+  html += `<div class="tu"><div style="font-size:13px;color:#666;margin-bottom:2px;">4 年总自费（无奖学金）</div>`;
+  d.schools.forEach(sch => {
+    html += `<div class="row"><span class="name">${esc(sch.name)}</span><div class="track"><div class="fill" style="width:${sch.pct}%"></div></div><span class="val">${esc(sch.tuition)}</span></div>`;
+  });
+  html += `</div>`;
+  html += `<div class="kq-box"><h4>🇩🇪 德国籍对目标学校诊断的影响</h4><ul>${d.deImpact.map(x=>`<li ${x.conclusion?'class="de-conclusion"':''}><b>${esc(x.b)}</b>：${esc(x.t)}</li>`).join('')}</ul></div>`;
+  html += `<div class="major"><div class="block-title">🎯 专业推荐</div><table><tr><th>推荐方向</th><th>对应专业</th><th>依据</th></tr>${d.majors.map(m=>`<tr ${m.warn?'class="warn"':''}><td>${esc(m.dir)}</td><td>${esc(m.major)}</td><td>${esc(m.basis)}</td></tr>`).join('')}</table></div>`;
+  html += `<div class="stat">${d.scholarship.map(pp=>`<div class="schol-card ${pp.type}"><div class="schol-head"><span class="schol-badge ${pp.type}">${esc(pp.status)}</span><b>${esc(pp.title)}</b></div><div class="schol-why">${esc(pp.why)}</div><div class="schol-next"><b>建议：</b>${esc(pp.next)}</div></div>`).join('')}</div>`;
+  html += `<div class="legend">${esc(d.starNote)}</div></section>`;
+  html += `<section class="sec"><h2>四、干预手段</h2><p class="sub">表1 · 最终目标拆解（路线图）｜ 表2 · 本学期目标拆解与行动建议</p>`;
+  html += `<div class="block-title">📍 最终目标拆解 · 成长路线图（G7 → G12 → 申请结果）</div>`;
+  html += buildRoadmap(iv.roadmap);
+  html += `<div class="legend">${esc(iv.roadmap.legend)}</div>`;
+  html += `<div class="block-title" style="margin-top:22px;">🎯 本学期目标拆解与行动建议</div>`;
+  html += `<table class="atbl"><tr><th>本学期目标</th><th>优先级</th><th>依据</th><th>校内</th><th>校外</th></tr>`;
+  iv.actions.forEach(a => {
+    html += `<tr><td>${esc(a.goal)}</td><td class="pri">${esc(a.pri)}</td><td>${esc(a.basis)}</td><td>${esc(a.inSchool)}</td><td class="${a.outSchool==='暂无信息'?'na':''}">${esc(a.outSchool)}</td></tr>`;
+  });
+  html += `</table></section>`;
+  html += `<!--BODY_END-->`;
+  const prNote = localStorage.getItem('principalNote');
+  const prSign = localStorage.getItem('principalSign');
+  if (!isParent && prNote) {
+    html += `<section class="sec"><h2>审批信息</h2>`;
+    html += `<div style="background:#f3e7f0;border-left:4px solid #920783;padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:12px;">`;
+    html += `<h4 style="margin:0 0 8px;color:#6c0561;font-size:13px;">📝 校长审批意见</h4>`;
+    html += `<p style="margin:0;font-size:12px;line-height:1.6;">${prNote.replace(/\n/g, '<br>')}</p></div>`;
+    if (prSign) html += `<p style="font-size:12px;"><b>校长签名：</b>${prSign}</p>`;
+    html += `</section>`;
+  }
+  html += `<footer style="margin-top:30px;padding-top:12px;border-top:1px solid #ddd;font-size:11px;color:#888;text-align:right;">生成时间：${new Date().toLocaleString('zh-CN')} | 康桥国际学校 AI 升学诊断系统</footer>`;
+
+  let finalHtml = html;
+  if (savedReport && savedReport.trim()) {
+    finalHtml = html.replace(/<!--BODY_START-->[\s\S]*?<!--BODY_END-->/,
+      '<!--BODY_START-->' + savedReport.replace(/ class="ed"/g, '').replace(/contenteditable="true"/g, '') + '<!--BODY_END-->');
+  }
+  finalHtml = finalHtml.replace(/<!--BODY_START-->|<!--BODY_END-->/g, '');
+  return finalHtml;
+}
+
+/* ============ 直接生成 PDF（跳过打印对话框） ============ */
+let _libs = null;
+function loadLibs() {
+  if (_libs) return Promise.resolve(_libs);
+  const cdn = [
+    'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+  ];
+  return new Promise((resolve, reject) => {
+    let i = 0;
+    const next = () => {
+      if (i >= cdn.length) {
+        if (window.html2canvas && window.jspdf && window.jspdf.jsPDF) {
+          _libs = { html2canvas: window.html2canvas, jsPDF: window.jspdf.jsPDF };
+          resolve(_libs);
+        } else reject(new Error('PDF 引擎加载失败'));
+        return;
+      }
+      const sc = document.createElement('script');
+      sc.src = cdn[i++];
+      sc.onload = next;
+      sc.onerror = () => reject(new Error('无法加载 PDF 引擎（请检查网络）'));
+      document.head.appendChild(sc);
+    };
+    next();
+  });
+}
+
+async function generatePDF(type) {
+  const btn = document.getElementById('btn-' + type);
+  const old = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '⏳ 生成中…';
+  try {
+    const { html2canvas, jsPDF } = await loadLibs();
+    const isParent = type === 'parent';
+    const src = document.getElementById('pdfSource');
+    src.innerHTML = buildReportHTML(isParent);
+    // 等待字体与布局稳定
+    await new Promise(r => setTimeout(r, 300));
+    const canvas = await html2canvas(src, { scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageW = 210, pageH = 297;
+    const imgW = pageW;
+    const imgH = canvas.height * imgW / canvas.width;
+    let heightLeft = imgH;
+    let position = 0;
+    pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+    heightLeft -= pageH;
+    while (heightLeft > 0) {
+      position = heightLeft - imgH; // 负偏移，逐页上移
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+      heightLeft -= pageH;
+    }
+    const fname = (isParent ? '康桥AI升学诊断报告_家长版' : '康桥AI升学诊断报告_内部版') + '.pdf';
+    pdf.save(fname);
+  } catch (e) {
+    alert('PDF 生成失败：' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = old;
+  }
+}
+</script>
+<button class="reset-fab" title="清空所有录入/审批数据并回到首页" onclick="if(confirm('确定重置演示数据？\n将清空录入、AI访谈、老师/校长审批等所有记录，并回到首页。')){['studentInput','teacherReportHTML','teacherNote','principalNote','principalSign','interviewResult','principalStatus','trails'].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});location.href='index.html';}">🔄 重置演示</button>
+</body>
+</html>

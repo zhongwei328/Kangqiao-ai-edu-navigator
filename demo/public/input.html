@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>康桥 AI 升学诊断 · 信息录入</title>
+<link rel="stylesheet" href="css/kangqiao.css">
+<style>
+.nav-links{display:flex;justify-content:space-between;margin:16px 0;}
+.nav-links a{font-size:14px;color:var(--kq);text-decoration:none;font-weight:500;}
+.nav-links a:hover{text-decoration:underline;}
+
+.req{color:var(--red);font-weight:700;margin-left:2px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:12px;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:13px;font-weight:600;color:var(--kq-d);}
+.field small{font-size:11px;color:var(--text-l);line-height:1.4;}
+input, textarea, select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--text);}
+input:focus, textarea:focus, select:focus{outline:none;border-color:var(--kq);box-shadow:0 0 0 3px var(--soft);}
+textarea{resize:vertical;line-height:1.6;}
+
+.acad-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:12px;}
+.acad-item{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--soft);}
+.acad-item .nm{font-size:13px;font-weight:600;color:var(--kq-d);margin-bottom:8px;}
+.acad-item .row{display:flex;align-items:center;gap:8px;}
+.acad-item input{width:72px;text-align:center;}
+.acad-item .mx{font-size:12px;color:var(--text-l);}
+
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 8px;}
+.btn{padding:10px 20px;font-size:14px;display:inline-block;background:var(--kq);color:#fff;border:none;border-radius:8px;cursor:pointer;text-decoration:none;font-weight:600;font-family:inherit;transition:.15s;}
+.btn:hover{background:var(--kq-d);}
+.btn.ghost{background:#fff;color:var(--kq-d);border:1px solid var(--kq);}
+.btn.ghost:hover{background:var(--soft);}
+.saved-tip{font-size:13px;color:var(--green);font-weight:600;opacity:0;transition:.2s;}
+.saved-tip.show{opacity:1;}
+.load-status{font-size:13px;color:var(--kq-d);font-weight:600;align-self:center;}
+.raw-details{margin:10px 0 4px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:#fff;}
+.raw-details summary{cursor:pointer;font-size:13px;color:var(--kq-d);font-weight:600;}
+.raw-details pre{margin:10px 0 0;max-height:260px;overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:12px;line-height:1.6;background:var(--soft);padding:10px;border-radius:6px;color:var(--text);}
+
+footer{margin-top:30px;font-size:11px;color:var(--text-l);text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>信息录入</h1>
+    <p>Step 1 / 5 · 学生基本信息与升学目标采集（演示可一键导入 Henry 示例）</p>
+  </header>
+
+  <div class="nav-links">
+    <a href="index.html" class="back">◀ 返回首页</a>
+    <a href="interview.html" class="forward">「AI 诊断访谈」▶</a>
+  </div>
+
+  <div class="topnav" id="topnav"></div>
+
+  <!-- ① 基本信息 -->
+  <div class="sec">
+    <h2>① 基本信息</h2>
+    <p class="sub">带 <span class="req">*</span> 为必填高收益项；<b>国籍</b>为「一等字段」，是后续诊断（如欧盟期权分支）的关键触发点。</p>
+    <div class="grid">
+      <div class="field"><label>姓名<span class="req">*</span></label><input id="f_name" placeholder="如：牟海天（Henry）"></div>
+      <div class="field"><label>年级</label><input id="f_grade" placeholder="如：G7"></div>
+      <div class="field"><label>学校</label><input id="f_school" placeholder="如：昆山康桥国际学校"></div>
+      <div class="field"><label>国籍（一等字段）<span class="req">*</span></label><input id="f_nationality" placeholder="如：德国籍 / 中国籍 / 美籍…"><small>决定身份池与特殊信息触发分支</small></div>
+      <div class="field"><label>父母海外身份 / 居留</label><input id="f_parents" placeholder="如：无 / 德国永居 / 美国工作签…"><small>触发「转身份可行性」分支</small></div>
+      <div class="field"><label>性格测评</label><input id="f_personality" placeholder="如：ESTP · 调研100% + 社会82%"></div>
+    </div>
+  </div>
+
+  <!-- ② 升学目标 -->
+  <div class="sec">
+    <h2>② 升学目标</h2>
+    <p class="sub">目标暂未确定也可照实填写「暂时不确定」，系统将转入探索式分支。</p>
+    <div class="grid">
+      <div class="field"><label>目标国家 · 地区</label><input id="f_target_countries" placeholder="如：港三 / 美国 / 暂时不确定"><small>可填「暂时不确定」</small></div>
+      <div class="field"><label>目标专业</label><input id="f_target_major" placeholder="如：数学 / 生物 / 暂时不确定"><small>可填「暂时不确定」</small></div>
+    </div>
+  </div>
+
+  <!-- ③ 学术成绩 -->
+  <div class="sec">
+    <h2>③ 学术成绩（MYP 1–7 量表）</h2>
+    <p class="sub">按科目填入当前等级（1–7）。</p>
+    <div id="acadGrid" class="acad-grid"></div>
+  </div>
+
+  <!-- ④ 课堂概览 / 老师评语 -->
+  <div class="sec">
+    <h2>④ 课堂概览 / 老师评语</h2>
+    <p class="sub">填入各科老师的具体评语（优点 + 改进点），是 AI 诊断与老师审批的引用依据。</p>
+    <textarea id="f_overview" rows="6" placeholder="如：数学老师 Serena Liang：「fantastic with numbers / gift for math」；对任务和持续完成作业是其他学生的榜样…"></textarea>
+  </div>
+
+  <!-- ⑤ 其它活动成绩 -->
+  <div class="sec">
+    <h2>⑤ 其它活动成绩（竞赛 / 志愿者 / 社团等）</h2>
+    <p class="sub">填入竞赛获奖、志愿服务、社团任职等课堂外的活动成绩。</p>
+    <textarea id="f_activities" rows="4" placeholder="如：MK金×3、AMC8 Top5%、BC生物银、Spelling Bee上海一等、演讲国赛金、校园志愿者 20h…"></textarea>
+  </div>
+
+  <!-- ⑥ 特殊资产 -->
+  <div class="sec">
+    <h2>⑥ 特殊资产 / 其他特殊情况</h2>
+    <p class="sub">自由文本，AI 将自动解析归类为：身份类 / 家庭类 / 能力类 / 经历类 / 风险类。</p>
+    <textarea id="f_special" rows="4" placeholder="如：家庭企业、冷门奖项、海外经历、健康/资金约束…"></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="btnImport">📥 导入 Henry 示例信息</button>
+    <button class="btn ghost" id="btnLoad">📂 上传文件识别（PDF / 图片）</button>
+    <button class="btn ghost" id="btnClear">🗑 清空</button>
+    <button class="btn ghost" id="btnSave">💾 保存</button>
+    <span class="saved-tip" id="savedTip">✓ 已保存</span>
+    <span class="load-status" id="loadStatus"></span>
+    <a class="btn" id="btnNext" href="interview.html" style="margin-left:auto;">下一步：AI 诊断访谈 ▶</a>
+  </div>
+  <input type="file" id="fileInput" accept=".pdf,image/*" style="display:none;">
+  <details class="raw-details" id="rawDetails" style="display:none;">
+    <summary>查看识别原文（请核对，可手动调整字段）</summary>
+    <pre id="rawBox"></pre>
+  </details>
+
+  <footer>康桥 AI 升学竞争力诊断与培养规划 · 内部 Demo（预置 Henry 假数据，未接 API）</footer>
+</div>
+
+<script src="js/henry-data.js"></script>
+<script>
+// —— 顶部 5 步导航 ——
+const steps = ['录入', 'AI访谈', '生成报告和老师审批', '校长审批', '导出'];
+const active = 0; // 本页 = 信息录入
+document.getElementById('topnav').innerHTML = steps.map((s, i) =>
+  `<span class="step ${i === active ? 'active' : ''}">${i + 1}. ${s}</span>`).join('');
+
+const H = window.HENRY;
+const $ = id => document.getElementById(id);
+const v = (id, val) => { const el = $(id); if (el) el.value = val; };
+const val = id => ($(id) ? $(id).value.trim() : '');
+
+// —— 渲染学术成绩网格（从 HENRY 预置）——
+const acadData = H.profile.academics;
+const ag = $('acadGrid');
+acadData.forEach((a, i) => {
+  const d = document.createElement('div');
+  d.className = 'acad-item';
+  d.innerHTML = `<div class="nm">${a.name}</div><div class="row"><input type="number" min="1" max="7" id="acad_${i}" value="${a.score}"><span class="mx">/ ${a.max}</span></div>`;
+  ag.appendChild(d);
+});
+
+// —— 导入 Henry 示例 ——
+function importHenry() {
+  const p = H.profile;
+  v('f_name', p.chips[0].v);
+  v('f_grade', 'G7');
+  v('f_school', '昆山康桥国际学校');
+  v('f_nationality', '德国籍');
+  v('f_parents', '—');
+  v('f_personality', p.chips[4].v);
+  v('f_target_countries', '港三（港大 / 港科大 / 港中文）');
+  v('f_target_major', '暂时不确定');
+  p.academics.forEach((a, i) => v('acad_' + i, a.score));
+  // ④ 课堂概览/老师评语：填入各科老师具体评语（优点 + 改进点）
+  const tch = [
+    ...H.summary.strengths.map(s => '【' + s.dim + '】' + s.text),
+    ...H.summary.weaknesses.map(s => '【' + s.dim + '·改进点】' + s.text)
+  ].join('\n');
+  v('f_overview', tch);
+  // ⑤ 其它活动成绩：填入竞赛/志愿者等成绩（与 IB 目标分等目标类信息区分开）
+  v('f_activities', p.achievements.join('　'));
+  v('f_special', '德国籍＝欧盟公民身份：可低/免学费就读德国、瑞士等欧洲顶尖大学；赴美读研不受部分针对中国籍学生的签证限制；申请港校免办港澳通行证与内地签注。');
+}
+
+// —— 清空 ——
+function clearAll() {
+  ['f_name','f_grade','f_school','f_nationality','f_parents','f_personality','f_target_countries','f_target_major','f_overview','f_activities','f_special']
+    .forEach(id => v(id, ''));
+  H.profile.academics.forEach((a, i) => v('acad_' + i, a.score));
+}
+
+// —— 保存（写入 localStorage，供后续步骤读取）——
+function collect() {
+  return {
+    name: val('f_name'),
+    grade: val('f_grade'),
+    school: val('f_school'),
+    nationality: val('f_nationality'),
+    parents: val('f_parents'),
+    personality: val('f_personality'),
+    targetCountries: val('f_target_countries'),
+    targetMajor: val('f_target_major'),
+    academics: H.profile.academics.map((a, i) => ({ name: a.name, score: Number(val('acad_' + i)) || a.score, max: a.max })),
+    overview: val('f_overview'),
+    activities: val('f_activities'),
+    special: val('f_special'),
+    savedAt: new Date().toISOString()
+  };
+}
+function save() {
+  localStorage.setItem('studentInput', JSON.stringify(collect()));
+  const tip = $('savedTip');
+  tip.classList.add('show');
+  setTimeout(() => tip.classList.remove('show'), 1800);
+}
+
+// —— 回填已保存数据 ——
+function loadSaved() {
+  const raw = localStorage.getItem('studentInput');
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    v('f_name', d.name); v('f_grade', d.grade); v('f_school', d.school);
+    v('f_nationality', d.nationality); v('f_parents', d.parents); v('f_personality', d.personality);
+    v('f_target_countries', d.targetCountries); v('f_target_major', d.targetMajor);
+    v('f_overview', d.overview); v('f_activities', d.activities); v('f_special', d.special);
+    if (Array.isArray(d.academics)) d.academics.forEach((a, i) => v('acad_' + i, a.score));
+  } catch (e) { /* 忽略损坏数据 */ }
+}
+
+// —— 文件识别（PDF / 图片）：浏览器端 OCR + PDF 文本提取 ——
+// 说明：零后端，识别引擎（PDF.js / Tesseract.js）按需从 CDN 懒加载，首次使用需联网下载中文模型（约数十秒）。
+const PDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+const PDF_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const TESS_URL = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+const acadIdx = {};
+H.profile.academics.forEach((a, i) => { acadIdx[a.name] = i; });
+
+function setStatus(msg){ const el = $('loadStatus'); if (el) el.textContent = msg; }
+
+function loadScript(src){
+  return new Promise((res, rej) => {
+    if (document.querySelector('script[src="' + src + '"]')) return res();
+    const s = document.createElement('script');
+    s.src = src; s.onload = () => res(); s.onerror = () => rej(new Error('引擎加载失败：' + src));
+    document.head.appendChild(s);
+  });
+}
+
+let _ocr = null, _ocrLoading = null;
+async function getOcr(){
+  if (_ocr) return _ocr;
+  if (_ocrLoading) return _ocrLoading;
+  _ocrLoading = (async () => {
+    await loadScript(TESS_URL);
+    const w = await Tesseract.createWorker({ logger: m => {
+      if (m.status === 'recognizing text') setStatus('识别中 ' + Math.round(m.progress * 100) + '%');
+      else if (m.status === 'loading language traineddata') setStatus('下载中文识别模型 ' + Math.round(m.progress * 100) + '%');
+    }});
+    await w.loadLanguage('chi_sim+eng');
+    await w.initialize('chi_sim+eng');
+    _ocr = w; return w;
+  })();
+  return _ocrLoading;
+}
+async function ocrText(input){
+  const w = await getOcr();
+  const { data } = await w.recognize(input);
+  return data.text;
+}
+async function extractPdfText(pdf){
+  let t = '';
+  for (let i = 1; i <= pdf.numPages; i++){
+    const page = await pdf.getPage(i);
+    const c = await page.getTextContent();
+    t += c.items.map(it => it.str).join(' ') + '\n';
+  }
+  return t;
+}
+async function pdfToImages(pdf){
+  const imgs = [];
+  for (let i = 1; i <= pdf.numPages; i++){
+    const page = await pdf.getPage(i);
+    const vp = page.getViewport({ scale: 2 });
+    const canvas = document.createElement('canvas');
+    canvas.width = vp.width; canvas.height = vp.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    imgs.push(canvas);
+  }
+  return imgs;
+}
+function parseToFields(text){
+  const get = re => { const m = text.match(re); return m ? m[1].trim() : ''; };
+  const f = {};
+  f.name = get(/姓名[：: ]*([^\n，,。]+)/) || get(/名字[：: ]*([^\n，,。]+)/) || get(/Name[：: ]*([^\n]+)/i);
+  f.grade = get(/年级[：: ]*(G?\d+)/i) || get(/Grade[：: ]*(\d+)/i);
+  f.school = get(/学校[：: ]*([^\n，,。]+)/);
+  f.nationality = get(/国籍[：: ]*([^\n，,。]+)/);
+  f.parents = get(/父母[：: ]*([^\n，,。]+)/) || get(/海外身份[：: ]*([^\n，,。]+)/);
+  f.personality = get(/性格[：: ]*([^\n，,。]+)/) || (text.match(/\b[A-Z]{4}\b/) ? text.match(/\b[A-Z]{4}\b/)[0] : '');
+  f.targetCountries = get(/目标国家[：: ]*([^\n，,。]+)/) || get(/国家[·：: ]*([^\n，,。]+)/);
+  f.targetMajor = get(/目标专业[：: ]*([^\n，,。]+)/) || get(/专业[：: ]*([^\n，,。]+)/);
+  const acad = {};
+  ['数学','人文','科学','英语','中文'].forEach(s => {
+    const m = text.match(new RegExp(s + '[\\s：:]*([0-7])(?:\\s*[/／]\\s*7)?'));
+    if (m) acad[s] = parseInt(m[1], 10);
+  });
+  f.acad = acad;
+  const lines = text.split(/\n+/);
+  f.overview = lines.filter(l => /老师/.test(l)).join('\n');
+  f.activities = lines.filter(l => /[金银]奖|AMC|MK|Spelling|演讲|竞赛|志愿|Volunteer|Olympiad|一等奖|二等/i.test(l)).join('　');
+  f.special = lines.filter(l => /德国|欧盟|护照|签证|身份|居留/i.test(l)).join('\n');
+  return f;
+}
+function applyFields(f){
+  if (f.name) v('f_name', f.name);
+  if (f.grade) v('f_grade', f.grade);
+  if (f.school) v('f_school', f.school);
+  if (f.nationality) v('f_nationality', f.nationality);
+  if (f.parents) v('f_parents', f.parents);
+  if (f.personality) v('f_personality', f.personality);
+  if (f.targetCountries) v('f_target_countries', f.targetCountries);
+  if (f.targetMajor) v('f_target_major', f.targetMajor);
+  if (f.overview) v('f_overview', f.overview);
+  if (f.activities) v('f_activities', f.activities);
+  if (f.special) v('f_special', f.special);
+  if (f.acad) Object.entries(f.acad).forEach(([s, sc]) => { if (acadIdx[s] != null) v('acad_' + acadIdx[s], sc); });
+}
+function countFilled(f){
+  let n = 0;
+  ['name','grade','school','nationality','parents','personality','targetCountries','targetMajor','overview','activities','special'].forEach(k => { if (f[k]) n++; });
+  if (f.acad && Object.keys(f.acad).length) n++;
+  return n;
+}
+async function handleFile(file){
+  if (!file) return;
+  setStatus('正在加载识别引擎…');
+  try {
+    let text = '';
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    if (isPdf) {
+      await loadScript(PDF_URL);
+      const pdfjsLib = window.pdfjsLib;
+      if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        const wres = await fetch(PDF_WORKER_URL);
+        const wblob = new Blob([await wres.text()], { type: 'application/javascript' });
+        pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(wblob);
+      }
+      setStatus('读取 PDF 中…');
+      const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      text = await extractPdfText(pdf);
+      if (text.replace(/\s/g, '').length < 20) {
+        setStatus('PDF 为扫描件，逐页识别中…');
+        const imgs = await pdfToImages(pdf);
+        const parts = [];
+        for (let i = 0; i < imgs.length; i++){
+          parts.push(await ocrText(imgs[i]));
+          setStatus('已识别 ' + (i + 1) + '/' + imgs.length + ' 页');
+        }
+        text = parts.join('\n');
+      }
+    } else {
+      setStatus('识别图片中…');
+      text = await ocrText(file);
+    }
+    const f = parseToFields(text);
+    applyFields(f);
+    const raw = $('rawBox'); raw.textContent = text;
+    $('rawDetails').style.display = 'block';
+    setStatus('✓ 识别完成，已填入 ' + countFilled(f) + ' 个字段，请核对后保存/修改');
+  } catch (e) {
+    console.error(e);
+    setStatus('识别失败：' + (e.message || e) + '（可能需联网加载模型，或文件无法解析）');
+  }
+}
+
+$('btnLoad').onclick = () => $('fileInput').click();
+$('fileInput').addEventListener('change', e => { const f = e.target.files[0]; if (f) handleFile(f); e.target.value = ''; });
+
+$('btnImport').onclick = importHenry;
+$('btnClear').onclick = clearAll;
+$('btnSave').onclick = save;
+// 点「下一步」前先自动保存
+$('btnNext').addEventListener('click', save);
+
+loadSaved();
+</script>
+<button class="reset-fab" title="清空所有录入/审批数据并回到首页" onclick="if(confirm('确定重置演示数据？\n将清空录入、AI访谈、老师/校长审批等所有记录，并回到首页。')){['studentInput','teacherReportHTML','teacherNote','principalNote','principalSign','interviewResult','principalStatus','trails'].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});location.href='index.html';}">🔄 重置演示</button>
+</body>
+</html>

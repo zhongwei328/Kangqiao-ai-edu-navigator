@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>康桥 AI 升学诊断 · 生成报告和老师审批</title>
+<link rel="stylesheet" href="css/kangqiao.css">
+<link rel="stylesheet" href="css/teacher.css">
+<style>
+.teacher-wrap{max-width:1040px;margin:0 auto;padding:28px 22px 60px;}
+.teacher-wrap > header.top{border-left:6px solid var(--kq);padding:6px 0 6px 16px;margin-bottom:8px;}
+.teacher-wrap > header.top h1{margin:0;font-size:22px;color:var(--kq-d);}
+.teacher-wrap > header.top p{margin:4px 0 0;color:var(--text-l);font-size:13px;}
+.nav-links{display:flex;justify-content:space-between;margin:16px 0;gap:10px;}
+.nav-links a{font-size:14px;color:var(--kq);text-decoration:none;font-weight:500;}
+.nav-links a:hover{text-decoration:underline;}
+.report-toolbar{display:flex;justify-content:flex-end;margin:6px 0 2px;}
+.tip{font-size:12px;color:var(--text-l);margin:6px 0 14px;line-height:1.6;}
+.teacher-note-box{background:#f9f9f9;border-left:4px solid var(--kq);padding:12px 16px;margin:10px 0;border-radius:0 8px 8px 0;line-height:1.7;font-size:14px;}
+#trailDisplay{margin-top:18px;border-top:1px dashed #d8b8e6;padding-top:10px;}
+</style>
+</head>
+<body>
+<div class="wrap teacher-wrap">
+  <header class="top">
+    <h1 id="reportTitle">生成 AI 诊断报告</h1>
+    <p id="reportSub">Step 3 / 5 · 生成 AI 诊断报告初稿；老师可进入编辑模式现场修改并审批</p>
+  </header>
+
+  <!-- 导航链接 -->
+  <div class="nav-links">
+    <a href="interview.html" class="back">◀ 返回「AI 访谈」</a>
+    <a href="principal.html" class="forward">「校长审批」▶</a>
+  </div>
+
+  <!-- 顶部步骤导航 -->
+  <div class="topnav" id="topnav"></div>
+
+  <!-- 进入编辑模式（常驻可见）-->
+  <div class="report-toolbar">
+    <button class="btn kq" id="btnEdit" onclick="toggleEditMode()">✏️ 进入编辑模式</button>
+  </div>
+  <p class="tip">提示：点击「进入编辑模式」可直接在报告里修改文字 / 星级，系统自动记录修订留痕；修改后点「提交并保存修改」会同步到校长审批页与导出页。</p>
+
+  <!-- 只读报告（report3.js 渲染）-->
+  <main id="report">
+    <p style="color:var(--text-l);font-size:13px;">报告加载中…</p>
+  </main>
+
+  <!-- 编辑卡片（teacher.js 渲染）-->
+  <div id="cards"></div>
+
+  <!-- 老师审批意见展示 -->
+  <div id="teacherNoteDisplay"></div>
+
+  <!-- 修订留痕 -->
+  <div class="trail" id="trailDisplay" style="display:none;">
+    <h4>修订留痕</h4>
+    <div id="trailList"><div class="empty">暂无修订</div></div>
+  </div>
+
+  <!-- AI 建议浮层 -->
+  <div class="ai-modal" id="aiModal">
+    <div class="ai-box">
+      <button class="close" id="aiClose">×</button>
+      <h3>✨ AI 修改建议</h3>
+      <p class="sub">基于老师意见自动生成的报告修订建议，点击「采用」即写入意见框 / 对应模块</p>
+      <div id="aiSugs"></div>
+    </div>
+  </div>
+
+  <!-- 审批栏（编辑态显示，置页面最底部）-->
+  <div class="approve-bar" id="approveBar">
+    <h3>📝 老师审批意见（页面最底部）</h3>
+    <textarea id="teacherNote" placeholder="请填写总体审批意见，例如：报告整体准确，建议补充 XXX…"></textarea>
+    <div class="row">
+      <button class="btn ghost" id="btnAi">✨ 查看 AI 建议</button>
+      <button class="btn kq" id="btnSubmit">✅ 提交并保存修改</button>
+    </div>
+    <div class="hint">提示：修改内容在「退出编辑模式」或「提交」时会自动保存，并同步到校长审批页与导出页。</div>
+  </div>
+
+  <footer id="reportFooter"></footer>
+</div>
+
+<script src="js/henry-data.js"></script>
+<script src="js/report3.js"></script>
+<script src="js/teacher.js"></script>
+<button class="reset-fab" title="清空所有录入/审批数据并回到首页" onclick="if(confirm('确定重置演示数据？\n将清空录入、AI访谈、老师/校长审批等所有记录，并回到首页。')){['studentInput','teacherReportHTML','teacherNote','principalNote','principalSign','interviewResult','principalStatus','trails'].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});location.href='index.html';}">🔄 重置演示</button>
+</body>
+</html>
